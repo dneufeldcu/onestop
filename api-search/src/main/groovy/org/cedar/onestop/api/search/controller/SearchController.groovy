@@ -7,11 +7,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestHeader
-import org.springframework.web.bind.annotation.RequestAttribute
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
-import groovy.json.JsonOutput
 import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpServletRequest
 
@@ -21,20 +17,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST
 
 import java.io.ByteArrayInputStream
 import org.apache.commons.io.IOUtils
-
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeFormatterBuilder
-import java.time.format.ResolverStyle
-import java.time.temporal.ChronoField
-import java.time.temporal.TemporalAccessor
-import java.time.temporal.TemporalQuery
-import java.time.ZoneOffset
-import java.time.Instant
-
 
 @Slf4j
 @RestController
