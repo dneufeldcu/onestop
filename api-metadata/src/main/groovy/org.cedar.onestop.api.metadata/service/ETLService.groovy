@@ -106,7 +106,6 @@ class ETLService {
         "${result.updatedGranules + result.createdGranules} of ${result.totalGranulesInRequest} requested granules in ${(end - start) / 1000}s"
   }
 
-
   @Scheduled(initialDelay = 600000L, fixedDelay = 604800000L) // 1 hour after startup then once a week after previous run ends
   public void updateSitemap() {
     log.info("starting sitemap update process")
@@ -123,6 +122,7 @@ class ETLService {
     elasticsearchService.refresh(collectionIndex, destination)
 
     def collections = []
+    def lastSubcollection = []
     def collectionsTotal
     def currentCount
 
@@ -146,15 +146,25 @@ class ETLService {
 
     collectionsTotal = collectionResponse.hits.total
     currentCount = collectionResponse.hits.hits*._id.size()
-    collections.add(collectionResponse.hits.hits*._id)
+    lastSubcollection.addAll(collectionResponse.hits.hits*._id)
 
     while(currentCount < collectionsTotal) {
       def scrollResponse = nextScrollRequest(scrollId)
       scrollId = scrollResponse._scroll_id
 
       currentCount += collectionResponse.hits.hits*._id.size()
-      collections.add (scrollResponse.hits.hits*._id)
+      if(lastSubcollection.size() < 40000) {
+        lastSubcollection.addAll(scrollResponse.hits.hits*._id)
+      } else {
+        collections.add(lastSubcollection)
+        lastSubcollection = []
+        lastSubcollection.addAll(scrollResponse.hits.hits*._id)
+      }
     }
+    if(lastSubcollection.size() > 0) {
+      collections.add(lastSubcollection)
+    }
+
     elasticsearchService.performRequest('DELETE', "_search/scroll/${scrollId}")
 
     def tasksInFlight = []
