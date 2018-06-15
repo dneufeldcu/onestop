@@ -28,6 +28,9 @@ class ElasticsearchService {
   @Value('${elasticsearch.index.prefix:}${elasticsearch.index.staging.granule.name}')
   String GRANULE_STAGING_INDEX
 
+  @Value('${elasticsearch.index.prefix:}${elasticsearch.index.sitemap.name}')
+  private String SITEMAP_INDEX
+
   @Value('${elasticsearch.index.prefix:}')
   String PREFIX
 
@@ -58,6 +61,7 @@ class ElasticsearchService {
   public void ensureSearchIndices() {
     ensureIndex(COLLECTION_SEARCH_INDEX)
     ensureIndex(GRANULE_SEARCH_INDEX)
+    ensureIndex(SITEMAP_INDEX)
   }
 
   public void ensurePipelines() {
@@ -105,6 +109,7 @@ class ElasticsearchService {
   public void dropSearchIndices() {
     drop(COLLECTION_SEARCH_INDEX)
     drop(GRANULE_SEARCH_INDEX)
+    drop(SITEMAP_INDEX)
   }
 
   public void drop(String indexName) {
