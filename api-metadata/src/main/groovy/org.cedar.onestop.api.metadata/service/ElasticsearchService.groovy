@@ -28,6 +28,9 @@ class ElasticsearchService {
   @Value('${elasticsearch.index.prefix:}${elasticsearch.index.staging.granule.name}')
   String GRANULE_STAGING_INDEX
 
+  @Value('${elasticsearch.index.prefix:}${elasticsearch.index.search.flattened-granule.name}')
+  private String FLAT_GRANULE_SEARCH_INDEX
+
   @Value('${elasticsearch.index.prefix:}${elasticsearch.index.sitemap.name}')
   private String SITEMAP_INDEX
 
@@ -61,6 +64,7 @@ class ElasticsearchService {
   public void ensureSearchIndices() {
     ensureIndex(COLLECTION_SEARCH_INDEX)
     ensureIndex(GRANULE_SEARCH_INDEX)
+    ensureIndex(FLAT_GRANULE_SEARCH_INDEX)
     ensureIndex(SITEMAP_INDEX)
   }
 
@@ -101,6 +105,10 @@ class ElasticsearchService {
     performRequest('POST', endpoint)
   }
 
+  public void refreshAllIndices() {
+    performRequest('POST', "${COLLECTION_STAGING_INDEX},${GRANULE_STAGING_INDEX},${COLLECTION_SEARCH_INDEX},${GRANULE_SEARCH_INDEX},${FLAT_GRANULE_SEARCH_INDEX}/_refresh")
+  }
+
   public void dropStagingIndices() {
     drop(COLLECTION_STAGING_INDEX)
     drop(GRANULE_STAGING_INDEX)
@@ -109,6 +117,7 @@ class ElasticsearchService {
   public void dropSearchIndices() {
     drop(COLLECTION_SEARCH_INDEX)
     drop(GRANULE_SEARCH_INDEX)
+    drop(FLAT_GRANULE_SEARCH_INDEX)
     drop(SITEMAP_INDEX)
   }
 
